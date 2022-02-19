@@ -4,7 +4,6 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QImage
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtCore						#importing pyqt5 libraries
-from scipy.ndimage import imread				#will help in reading the images
 from PyQt5.QtCore import QTimer,Qt
 from PyQt5 import QtGui
 from tkinter import filedialog					#for file export module
@@ -19,6 +18,7 @@ import numpy as np 								#proceesing on images
 import qimage2ndarray 							#convers images into matrix
 import win32api
 import winGuiAuto
+from tensorflow.keras.models import load_model
 import win32gui
 import win32con									#for removing title cv2 window and always on top
 import keyboard									#for pressing keys
@@ -35,9 +35,9 @@ def nothing(x):
 
 image_x, image_y = 64, 64  # image resolution
 
-from keras.models import load_model
 
-classifier = load_model('ASLModel.h5')  # loading the model
+
+classifier = load_model('Trained_model.h5')  # loading the model
 
 
 def fileSearch():
@@ -163,8 +163,8 @@ def controlTimer(self):
 def predictor():
     """ Depending on model loaded and customgesture saved prediction is made by checking array or through SiFt algo"""
     import numpy as np
-    from keras.preprocessing import image
-    test_image = image.load_img('../1.png', target_size=(64, 64))
+    from tensorflow.keras.preprocessing import image
+    test_image = image.load_img('1.png', target_size=(64, 64))
     test_image = image.img_to_array(test_image)
     test_image = np.expand_dims(test_image, axis=0)
     result = classifier.predict(test_image)
@@ -172,7 +172,7 @@ def predictor():
     fileEntry = fileSearch()
     for i in range(len(fileEntry)):
         image_to_compare = cv2.imread("./SampleGestures/" + fileEntry[i])
-        original = cv2.imread("../1.png")
+        original = cv2.imread("1.png")
         sift = cv2.xfeatures2d.SIFT_create()
         kp_1, desc_1 = sift.detectAndCompute(original, None)
         kp_2, desc_2 = sift.detectAndCompute(image_to_compare, None)
@@ -266,7 +266,7 @@ class Dashboard(QtWidgets.QMainWindow):
     def __init__(self):
         super(Dashboard, self).__init__()
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
-        cap = cv2.VideoCapture('gestfinal2.min.mp4')
+        cap = cv2.VideoCapture('ee.mp4')
 
         # Read until video is completed
         while (cap.isOpened()):
