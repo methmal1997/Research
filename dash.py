@@ -3,60 +3,62 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QImage
 from PyQt5.QtGui import QPixmap
-from PyQt5 import QtCore  # importing pyqt5 libraries
-# from scipy.ndimage import imread  # will help in reading the images
-from PyQt5.QtCore import QTimer, Qt
+from PyQt5 import QtCore						#importing pyqt5 libraries
+from PyQt5.QtCore import QTimer,Qt
 from PyQt5 import QtGui
-from tkinter import filedialog  # for file export module
+from tkinter import filedialog					#for file export module
 from tkinter import *
 import tkinter as tk
-from matplotlib import pyplot as plt  # for gesture viewer
+from matplotlib import pyplot as plt 			#for gesture viewer
 from matplotlib.widgets import Button
-import sys  # for pyqt
-import os  # for removal of files
-import cv2  # for the camera operations
-import numpy as np  # proceesing on images
-import qimage2ndarray  # convers images into matrix
+import sys										#for pyqt
+import os										#for removal of files
+import cv2										#for the camera operations
+import numpy as np 								#proceesing on images
+import qimage2ndarray 							#convers images into matrix
 import win32api
 import winGuiAuto
+from tensorflow.keras.models import load_model
 import win32gui
-import win32con  # for removing title cv2 window and always on top
-import keyboard  # for pressing keys
-import pyttsx3  # for tts assistance
-import shutil  # for removal of directories
+import win32con									#for removing title cv2 window and always on top
+import keyboard									#for pressing keys
+import pyttsx3									#for tts assistance
+import shutil									#for removal of directories
+index = 0										#index used for gesture viewer
+engine = pyttsx3.init()
 
-index = 0  # index used for gesture viewer
-engine = pyttsx3.init()  # engine initialization for audio tts assistance
 
 
 def nothing(x):
     pass
 
 
-image_x, image_y = 64, 64  # image resolution
+image_x, image_y = 64, 64
+# image resolution getting
 
-from keras.models import load_model
 
-classifier = load_model('ASLModel.h5')  # loading the model
+
+classifier = load_model('Trained_model.h5')
+# loading the model that i made
 
 
 def fileSearch():
-    """Searches each file ending with .png in SampleGestures dirrectory so that custom gesture could be passed to predictor() function"""
     fileEntry = []
     for file in os.listdir("SampleGestures"):
         if file.endswith(".png"):
             fileEntry.append(file)
     return fileEntry
+#Here i search each file ending with .png in samplegestre directory the it can pass the cutom gesture through the predictor fun
 
 
 def load_images_from_folder(folder):
-    """Searches each images in a specified directory"""
     images = []
     for filename in os.listdir(folder):
         img = cv2.imread(os.path.join(folder, filename))
         if img is not None:
             images.append(img)
     return images
+#Searches each images in a specified directory
 
 
 def toggle_imagesfwd(event):
@@ -161,9 +163,8 @@ def controlTimer(self):
 
 
 def predictor():
-    """ Depending on model loaded and customgesture saved prediction is made by checking array or through SiFt algo"""
     import numpy as np
-    from keras.preprocessing import image
+    from tensorflow.keras.preprocessing import image
     test_image = image.load_img('1.png', target_size=(64, 64))
     test_image = image.img_to_array(test_image)
     test_image = np.expand_dims(test_image, axis=0)
@@ -266,7 +267,7 @@ class Dashboard(QtWidgets.QMainWindow):
     def __init__(self):
         super(Dashboard, self).__init__()
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
-        cap = cv2.VideoCapture('gestfinal2.min.mp4')
+        cap = cv2.VideoCapture('ee.mp4')
 
         # Read until video is completed
         while (cap.isOpened()):

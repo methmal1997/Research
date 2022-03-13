@@ -3,7 +3,7 @@ import numpy as np
 import os
 import matplotlib
 
-import openml
+
 
 def nothing(x):
     pass
